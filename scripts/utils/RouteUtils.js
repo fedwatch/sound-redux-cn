@@ -1,38 +1,53 @@
+/**
+ * 路由工具类
+ * @param route
+ * @returns {string|*}
+ */
+/**
+ * 构造路由
+ * @param route
+ * @returns {string|*}
+ */
 export function constructUrl(route) {
-  const { path, query } = route;
-  let result = path.join('/');
-  let queryArr = [];
-  if (query && typeof query === 'object') {
-    queryArr = Object.keys(query).sort()
-      .filter(key => query[key] !== null)
-      .map(key => `${key}=${query[key]}`);
-  }
+    const {path, query} = route;
+    let result = path.join('/');
+    let queryArr = [];
+    if (query && typeof query === 'object') {
+        queryArr = Object.keys(query).sort()
+            .filter(key => query[key] !== null)
+            .map(key => `${key}=${query[key]}`);
+    }
 
-  if (queryArr.length > 0) {
-    result += `?${queryArr.join('&')}`;
-  }
+    if (queryArr.length > 0) {
+        result += `?${queryArr.join('&')}`;
+    }
 
-  return result;
+    return result;
 }
 
+/**
+ * 解析URL
+ * @param windowHash
+ * @returns {{path: Array, query: {}}}
+ */
 export function parseUrl(windowHash) {
-  let path = [];
-  const query = {};
-  const hashArr = windowHash.replace('#/', '').split('?');
-  path = hashArr[0].split('/');
+    let path = [];
+    const query = {};
+    const hashArr = windowHash.replace('#/', '').split('?');
+    path = hashArr[0].split('/');
 
-  if (hashArr.length > 1) {
-    hashArr[1].split('&').forEach(str => {
-      const arr = str.split('=');
-      const key = arr[0];
-      const value = arr[1];
-      if (isNaN(value)) {
-        query[key] = value;
-      } else {
-        query[key] = Number(value);
-      }
-    });
-  }
+    if (hashArr.length > 1) {
+        hashArr[1].split('&').forEach(str => {
+            const arr = str.split('=');
+            const key = arr[0];
+            const value = arr[1];
+            if (isNaN(value)) {
+                query[key] = value;
+            } else {
+                query[key] = Number(value);
+            }
+        });
+    }
 
-  return { path, query };
+    return {path, query};
 }

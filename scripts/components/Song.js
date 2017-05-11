@@ -1,6 +1,6 @@
-import React, { Component, PropTypes } from 'react';
-import { playSong } from '../actions/PlayerActions';
-import { fetchSongIfNeeded } from '../actions/SongsActions';
+import React, {Component, PropTypes} from 'react';
+import {playSong} from '../actions/PlayerActions';
+import {fetchSongIfNeeded} from '../actions/SongsActions';
 
 import Comments from '../components/Comments';
 import Link from '../components/Link';
@@ -12,203 +12,238 @@ import Waveform from '../components/Waveform';
 
 import TogglePlayButtonContainer from '../containers/TogglePlayButtonContainer';
 
-import { SONG_PLAYLIST_SUFFIX } from '../constants/PlaylistConstants';
-import { IMAGE_SIZES } from '../constants/SongConstants';
+import {SONG_PLAYLIST_SUFFIX} from '../constants/PlaylistConstants';
+import {IMAGE_SIZES} from '../constants/SongConstants';
 
-import { addCommas } from '../utils/FormatUtils';
-import { getImageUrl } from '../utils/SongUtils';
+import {addCommas} from '../utils/FormatUtils';
+import {getImageUrl} from '../utils/SongUtils';
 
+/**
+ * 属性验证
+ * @type {{authed: *, dispatch: *, height: (*), player: *, playingSongId: (*), playlists: *, songId: (*), songs: *, sticky: *, users: *}}
+ */
 const propTypes = {
-  authed: PropTypes.object.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  height: PropTypes.number,
-  player: PropTypes.object.isRequired,
-  playingSongId: PropTypes.number,
-  playlists: PropTypes.object.isRequired,
-  songId: PropTypes.number,
-  songs: PropTypes.object.isRequired,
-  sticky: PropTypes.bool.isRequired,
-  users: PropTypes.object.isRequired,
+    authed: PropTypes.object.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    height: PropTypes.number,
+    player: PropTypes.object.isRequired,
+    playingSongId: PropTypes.number,
+    playlists: PropTypes.object.isRequired,
+    songId: PropTypes.number,
+    songs: PropTypes.object.isRequired,
+    sticky: PropTypes.bool.isRequired,
+    users: PropTypes.object.isRequired,
 };
 
+/**
+ * 歌曲展示组件
+ */
 class Song extends Component {
-  componentWillMount() {
-    const { dispatch, songId } = this.props;
-    dispatch(fetchSongIfNeeded(songId));
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { dispatch, songId } = this.props;
-    if (nextProps.songId !== songId) {
-      dispatch(fetchSongIfNeeded(nextProps.songId));
-    }
-  }
-
-  playSong(i) {
-    const { dispatch, songId, songs } = this.props;
-    const song = songs[songId];
-    if (!song) {
-      return;
+    /**
+     * 组件预渲染
+     */
+    componentWillMount() {
+        const {dispatch, songId} = this.props;
+        dispatch(fetchSongIfNeeded(songId));
     }
 
-    dispatch(playSong(song.title + SONG_PLAYLIST_SUFFIX, i));
-  }
-
-  renderComments() {
-    const { height, player, playingSongId, songId, songs } = this.props;
-    const song = songs[songId];
-    if (!song || !song.comments) {
-      return null;
+    /**
+     * 组件接收新Props
+     * @description 组件接收到新的 props 的时候调用，每次接受新的props触发
+     * @param nextProps
+     */
+    componentWillReceiveProps(nextProps) {
+        const {dispatch, songId} = this.props;
+        if (nextProps.songId !== songId) {
+            dispatch(fetchSongIfNeeded(nextProps.songId));
+        }
     }
 
-    return (
-      <Comments
-        comments={song.comments}
-        currentTime={player.currentTime}
-        height={height}
-        isActive={playingSongId === song.id}
-      />
-    );
-  }
+    /**
+     * 播放歌曲
+     * @param i
+     */
+    playSong(i) {
+        const {dispatch, songId, songs} = this.props;
+        const song = songs[songId];
+        if (!song) {
+            return;
+        }
 
-  renderSongs() {
-    const { authed, dispatch, player, playingSongId, playlists, songId, songs, users } = this.props;
-    const song = songs[songId];
-    const playlist = song.title + SONG_PLAYLIST_SUFFIX;
-    const relatedSongs = playlist in playlists ? playlists[playlist] : {};
-    if (!relatedSongs.items) {
-      return null;
+        dispatch(playSong(song.title + SONG_PLAYLIST_SUFFIX, i));
     }
 
-    const items = relatedSongs.items.slice(1).map((relatedSongId, i) => {
-      const relatedSong = songs[relatedSongId];
-      const user = users[relatedSong.user_id];
-      const playSongFunc = this.playSong.bind(this, i + 1);
-      return (
-        <SongListItem
-          authed={authed}
-          dispatch={dispatch}
-          isActive={playingSongId === relatedSong.id}
-          key={relatedSong.id}
-          player={player}
-          playSong={playSongFunc}
-          song={relatedSong}
-          user={user}
-        />
-      );
-    });
+    /**
+     * 处理评论
+     * @returns {*}
+     */
+    renderComments() {
+        const {height, player, playingSongId, songId, songs} = this.props;
+        const song = songs[songId];
+        if (!song || !song.comments) {
+            return null;
+        }
 
-    return (
-      <div className="tab-content">
-        {items}
-      </div>
-    );
-  }
-
-  renderTogglePlayButton() {
-    const { playingSongId, songId } = this.props;
-    const isActive = playingSongId && playingSongId === songId;
-    const playSongFunc = this.playSong.bind(this, 0);
-
-    if (isActive) {
-      return <TogglePlayButtonContainer />;
+        return (
+            <Comments
+                comments={song.comments}
+                currentTime={player.currentTime}
+                height={height}
+                isActive={playingSongId === song.id}
+            />
+        );
     }
 
-    return (
-      <div className="toggle-play-button" onClick={playSongFunc}>
-        <i className="toggle-play-button-icon ion-ios-play" />
-      </div>
-    );
-  }
+    /**
+     * 渲染歌曲
+     * @returns {*}
+     */
+    renderSongs() {
+        const {authed, dispatch, player, playingSongId, playlists, songId, songs, users} = this.props;
+        const song = songs[songId];
+        const playlist = song.title + SONG_PLAYLIST_SUFFIX;
+        const relatedSongs = playlist in playlists ? playlists[playlist] : {};
+        if (!relatedSongs.items) {
+            return null;
+        }
 
-  render() {
-    const { authed, dispatch, playingSongId, player, songId, songs, sticky, users } = this.props;
-    const song = songs[songId];
-    if (!song) {
-      return <Spinner />;
+        const items = relatedSongs.items.slice(1).map((relatedSongId, i) => {
+            const relatedSong = songs[relatedSongId];
+            const user = users[relatedSong.user_id];
+            const playSongFunc = this.playSong.bind(this, i + 1);
+            return (
+                <SongListItem
+                    authed={authed}
+                    dispatch={dispatch}
+                    isActive={playingSongId === relatedSong.id}
+                    key={relatedSong.id}
+                    player={player}
+                    playSong={playSongFunc}
+                    song={relatedSong}
+                    user={user}
+                />
+            );
+        });
+
+        return (
+            <div className="tab-content">
+                {items}
+            </div>
+        );
     }
 
-    const isActive = Boolean(playingSongId && playingSongId === song.id);
-    const image = getImageUrl(song.artwork_url, IMAGE_SIZES.LARGE);
-    const playSongFunc = this.playSong.bind(this, 0);
-    const user = song.user_id in users ? users[song.user_id] : {};
+    /**
+     * 渲染切换播放按钮
+     * @returns {XML}
+     */
+    renderTogglePlayButton() {
+        const {playingSongId, songId} = this.props;
+        const isActive = playingSongId && playingSongId === songId;
+        const playSongFunc = this.playSong.bind(this, 0);
 
-    return (
-      <div className="container">
-        <div className="content">
-          <div className="grid">
-            <div className="col-7-10">
-              <div className={`song card ${(isActive ? ' active' : '')}`}>
-                <div className="song-main">
-                  <div
-                    className="song__image"
-                    style={{ backgroundImage: `url(${image})` }}
-                  >
-                    {this.renderTogglePlayButton()}
-                  </div>
-                  <div className="song__info__wrap">
-                    <div className="song__info">
-                      <div className="song-title">
-                        {song.title}
-                      </div>
-                      <div className="song-user">
-                        <div
-                          className="song-user-image"
-                          style={{ backgroundImage: `url(${getImageUrl(user.avatar_url)})` }}
-                        />
-                        <Link
-                          className="song-username"
-                          dispatch={dispatch}
-                          route={{ path: ['users', user.id] }}
-                        >
-                          {user.username}
-                        </Link>
-                      </div>
-                      <div className="song-stats">
-                        <SongHeartCount
-                          authed={authed}
-                          count={song.likes_count ? song.likes_count : song.favoritings_count}
-                          dispatch={dispatch}
-                          songId={song.id}
-                        />
-                        <div className="song-stat">
-                          <i className="icon ion-play" />
-                          <span>{addCommas(song.playback_count)}</span>
+        if (isActive) {
+            return <TogglePlayButtonContainer />;
+        }
+
+        return (
+            <div className="toggle-play-button" onClick={playSongFunc}>
+                <i className="toggle-play-button-icon ion-ios-play"/>
+            </div>
+        );
+    }
+
+    /**
+     * 渲染
+     * @returns {XML}
+     */
+    render() {
+        const {authed, dispatch, playingSongId, player, songId, songs, sticky, users} = this.props;
+        const song = songs[songId];
+        if (!song) {
+            return <Spinner />;
+        }
+
+        const isActive = Boolean(playingSongId && playingSongId === song.id);
+        const image = getImageUrl(song.artwork_url, IMAGE_SIZES.LARGE);
+        const playSongFunc = this.playSong.bind(this, 0);
+        const user = song.user_id in users ? users[song.user_id] : {};
+
+        return (
+            <div className="container">
+                <div className="content">
+                    <div className="grid">
+                        <div className="col-7-10">
+                            <div className={`song card ${(isActive ? ' active' : '')}`}>
+                                <div className="song-main">
+                                    <div
+                                        className="song__image"
+                                        style={{backgroundImage: `url(${image})`}}
+                                    >
+                                        {this.renderTogglePlayButton()}
+                                    </div>
+                                    <div className="song__info__wrap">
+                                        <div className="song__info">
+                                            <div className="song-title">
+                                                {song.title}
+                                            </div>
+                                            <div className="song-user">
+                                                <div
+                                                    className="song-user-image"
+                                                    style={{backgroundImage: `url(${getImageUrl(user.avatar_url)})`}}
+                                                />
+                                                <Link
+                                                    className="song-username"
+                                                    dispatch={dispatch}
+                                                    route={{path: ['users', user.id]}}
+                                                >
+                                                    {user.username}
+                                                </Link>
+                                            </div>
+                                            <div className="song-stats">
+                                                <SongHeartCount
+                                                    authed={authed}
+                                                    count={song.likes_count ? song.likes_count : song.favoritings_count}
+                                                    dispatch={dispatch}
+                                                    songId={song.id}
+                                                />
+                                                <div className="song-stat">
+                                                    <i className="icon ion-play"/>
+                                                    <span>{addCommas(song.playback_count)}</span>
+                                                </div>
+                                                <div className="song-stat">
+                                                    <i className="icon ion-chatbubble"/>
+                                                    <span>{addCommas(song.comment_count)}</span>
+                                                </div>
+                                            </div>
+                                            <div className="song-description">
+                                                {song.description}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="song-waveform">
+                                        <Waveform
+                                            currentTime={player.currentTime}
+                                            dispatch={dispatch}
+                                            duration={song.duration}
+                                            isActive={isActive}
+                                            playSong={playSongFunc}
+                                            waveformUrl={song.waveform_url.replace('https', 'http')}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                            {this.renderSongs()}
                         </div>
-                        <div className="song-stat">
-                          <i className="icon ion-chatbubble" />
-                          <span>{addCommas(song.comment_count)}</span>
+                        <div className="col-3-10">
+                            <div className={`sidebar ${(sticky ? ' sticky' : '')}`}>
+                                {this.renderComments()}
+                            </div>
                         </div>
-                      </div>
-                      <div className="song-description">
-                        {song.description}
-                      </div>
                     </div>
-                  </div>
-                  <div className="song-waveform">
-                    <Waveform
-                      currentTime={player.currentTime}
-                      dispatch={dispatch}
-                      duration={song.duration}
-                      isActive={isActive}
-                      playSong={playSongFunc}
-                      waveformUrl={song.waveform_url.replace('https', 'http')}
-                    />
-                  </div>
                 </div>
-              </div>
-              {this.renderSongs()}
             </div>
-            <div className="col-3-10">
-              <div className={`sidebar ${(sticky ? ' sticky' : '')}`}>
-                {this.renderComments()}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+        );
+    }
 }
 
 Song.propTypes = propTypes;

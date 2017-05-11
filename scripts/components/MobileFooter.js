@@ -1,9 +1,27 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
+/**
+ * 移动页脚
+ */
 class MobileFooter extends Component {
-  render() {
-    return <div></div>;
-  }
+    /**
+     * 构造器
+     */
+    constructor(){
+        super();
+    }
+
+    /**
+     * 渲染
+     * @returns {XML}
+     */
+    render() {
+        return <div>
+            <span className="playlist-footer">
+                XDuo
+            </span>
+        </div>;
+    }
 }
 
 export default MobileFooter;

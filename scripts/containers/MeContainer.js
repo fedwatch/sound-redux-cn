@@ -1,45 +1,62 @@
-import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
+import React, {Component, PropTypes} from 'react';
+import {connect} from 'react-redux';
+
 import Me from '../components/Me';
 import MobileMe from '../components/MobileMe';
-import { getPlayingSongId } from '../utils/PlayerUtils';
+import {getPlayingSongId} from '../utils/PlayerUtils';
 
+/**
+ * 属性验证
+ * @type {{isMobile: *}}
+ */
 const propTypes = {
-  isMobile: PropTypes.bool,
+    isMobile: PropTypes.bool,
 };
 
+/**
+ * Me容器
+ */
 class MeContainer extends Component {
-  render() {
-    const { isMobile } = this.props;
-    if (isMobile) {
-      return <MobileMe {...this.props} />;
-    }
+    /**
+     * 渲染
+     * @returns {XML}
+     */
+    render() {
+        const {isMobile} = this.props;
+        if (isMobile) {
+            return <MobileMe {...this.props} />;
+        }
 
-    return <Me {...this.props} />;
-  }
+        return <Me {...this.props} />;
+    }
 }
 
 MeContainer.propTypes = propTypes;
 
+/**
+ * 映射状态到属性
+ * @param state
+ * @returns {{authed: *, authedPlaylists, height: *, isMobile: *, player: *, playingSongId: null, playlists: *, route: *, songs: *, users: *}}
+ */
 function mapStateToProps(state) {
-  const { authed, entities, environment, navigator, player, playlists } = state;
-  const { height, isMobile } = environment;
-  const { songs, users } = entities;
-  const { route } = navigator;
-  const playingSongId = getPlayingSongId(player, playlists);
+    const {authed, entities, environment, navigator, player, playlists} = state;
+    const {height, isMobile} = environment;
+    const {songs, users} = entities;
+    const {route} = navigator;
+    const playingSongId = getPlayingSongId(player, playlists);
 
-  return {
-    authed,
-    authedPlaylists: entities.playlists,
-    height,
-    isMobile,
-    player,
-    playingSongId,
-    playlists,
-    route,
-    songs,
-    users,
-  };
+    return {
+        authed,
+        authedPlaylists: entities.playlists,
+        height,
+        isMobile,
+        player,
+        playingSongId,
+        playlists,
+        route,
+        songs,
+        users,
+    };
 }
 
 export default connect(mapStateToProps)(MeContainer);

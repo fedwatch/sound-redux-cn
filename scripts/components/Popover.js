@@ -1,71 +1,100 @@
-import React, { Component, PropTypes } from 'react';
+import React, {Component, PropTypes} from 'react';
 import ReactDOM from 'react-dom';
 
+/**
+ * 属性验证
+ * @type {{className, children: *}}
+ */
 const propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.node.isRequired,
+    className: PropTypes.string,
+    children: PropTypes.node.isRequired,
 };
 
+/**
+ * 弹出框
+ */
 class Popover extends Component {
-  constructor(props) {
-    super(props);
-    if (props.children.length !== 2) {
-      throw new Error('Popover component requires exactly 2 children');
+    /**
+     * 构造器
+     * @param props
+     */
+    constructor(props) {
+        super(props);
+        if (props.children.length !== 2) {
+            throw new Error('Popover component requires exactly 2 children');
+        }
+
+        this.onOutsideClick = this.onOutsideClick.bind(this);
+        this.toggleIsOpen = this.toggleIsOpen.bind(this);
+
+        this.state = {isOpen: false};
     }
 
-    this.onOutsideClick = this.onOutsideClick.bind(this);
-    this.toggleIsOpen = this.toggleIsOpen.bind(this);
-
-    this.state = { isOpen: false };
-  }
-
-  componentDidMount() {
-    document.addEventListener('mousedown', this.onOutsideClick);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('mousedown', this.onOutsideClick);
-  }
-
-  onOutsideClick(e) {
-    if (!this.state.isOpen) {
-      return;
+    /**
+     * 组件渲染完毕
+     * @description 类似于window.onload
+     */
+    componentDidMount() {
+        document.addEventListener('mousedown', this.onOutsideClick);
     }
 
-    e.stopPropagation();
-    const localNode = ReactDOM.findDOMNode(this);
-    let source = e.target;
-
-    while (source.parentNode) {
-      if (source === localNode) {
-        return;
-      }
-      source = source.parentNode;
+    /**
+     * 组件要被从界面上移除
+     */
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.onOutsideClick);
     }
 
-    this.setState({
-      isOpen: false,
-    });
-  }
+    /**
+     * 在组件外边点击
+     * @param e
+     */
+    onOutsideClick(e) {
+        if (!this.state.isOpen) {
+            return;
+        }
 
-  toggleIsOpen() {
-    this.setState({ isOpen: !this.state.isOpen });
-  }
+        e.stopPropagation();//阻止冒泡
+        const localNode = ReactDOM.findDOMNode(this);
+        let source = e.target;
 
-  render() {
-    const { isOpen } = this.state;
-    const { className, children } = this.props;
+        while (source.parentNode) {
+            if (source === localNode) {
+                return;
+            }
+            source = source.parentNode;
+        }
 
-    return (
-      <div
-        className={`${className} popover ${(isOpen ? ' open' : '')}`}
-        onClick={this.toggleIsOpen}
-      >
-        {children[0]}
-        {isOpen ? children[1] : null}
-      </div>
-    );
-  }
+        this.setState({
+            isOpen: false,
+        });
+    }
+
+    /**
+     * 切换正在打开状态
+     */
+    toggleIsOpen() {
+        this.setState({isOpen: !this.state.isOpen});
+    }
+
+    /**
+     * 渲染
+     * @returns {XML}
+     */
+    render() {
+        const {isOpen} = this.state;
+        const {className, children} = this.props;
+
+        return (
+            <div
+                className={`${className} popover ${(isOpen ? ' open' : '')}`}
+                onClick={this.toggleIsOpen}
+            >
+                {children[0]}
+                {isOpen ? children[1] : null}
+            </div>
+        );
+    }
 }
 
 Popover.propTypes = propTypes;

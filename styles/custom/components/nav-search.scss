@@ -1,6 +1,7 @@
 .nav-search {
     position: relative;
-    background-color: #2B2B2B;
+    //background-color: #2B2B2B;
+    background-color: #f9c14f;
     border-radius: 3px;
 
     i {
@@ -15,7 +16,8 @@
 input[type="text"].nav-search-input {
     width: 290px;
     padding: 6px 10px 6px 30px;
-    color: #e3e3e3;
+    //color: #e3e3e3;
+    color: #808080;
     font-weight: 300;
     background-color: transparent;
 }
