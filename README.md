@@ -1,16 +1,16 @@
-# SoundRedux
+# SoundRedux-cn 中文源码解释版
 
-In an effort to learn es6 and [redux](https://github.com/rackt/redux), this is SoundRedux, a simple [Soundcloud](http://soundcloud.com) client
+SoundRedux-cn , 您可以通过本应用学习React + [redux](https://github.com/rackt/redux) + ES6 等等大量的技术细节,  [Soundcloud](http://soundcloud.com) 客户端项目。
 
-See it in action at https://soundredux.io
+Demo在线地址 https://soundredux.io
 
-Uses [normalizr](https://github.com/gaearon/normalizr)
+同时使用 [normalizr](https://github.com/gaearon/normalizr)
 
 1. `npm install`
 2. `npm run start`
-3. visit `http://localhost:8080`
+3. 浏览器访问 `http://localhost:8080`
 
-### Install local server
+### 安装本地服务器
 
 To see user authentication in action in your local environment, install and run the server.
 
@@ -20,7 +20,7 @@ To see user authentication in action in your local environment, install and run 
 4. `$ go get .`
 5. `$ go install .`
 
-Once installed you can run the server:
+一次安装后即可使用:
 `$ server`
 
-Feedback, issues, etc. are more than welcome!
+欢迎提交Issues！

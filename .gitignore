@@ -5,3 +5,7 @@ server/config
 server/public/css
 server/public/js
 npm-debug.log
+.idea/dbnavigator.xml
+.idea/markdown-exported-files.xml
+.idea/markdown-navigator.xml
+.idea/markdown-navigator/
