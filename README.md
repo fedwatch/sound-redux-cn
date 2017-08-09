@@ -12,10 +12,10 @@ Demo在线地址 https://soundredux.io
 
 ### 安装本地服务器
 
-To see user authentication in action in your local environment, install and run the server.
+为了能让您使用用户认证的服务，请在本地服务器环境下，按以下步骤操作：
 
-1. Make sure you have [Go](https://golang.org/) installed.
-2. Make sure the `sound-redux` folder is in your `$GOPATH`
+1. 确保已经安装了 [Go](https://golang.org/) 语言。
+2. 确保 `sound-redux` 文件目录在你的 `$GOPATH`有设置
 3. `$ cd server`
 4. `$ go get .`
 5. `$ go install .`
