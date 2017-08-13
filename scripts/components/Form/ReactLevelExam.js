@@ -1,9 +1,14 @@
 /**
  * Created by admin on 2017/3/5.
  */
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react';
 
 
+var propTypes = {};
+
+/**
+ * 非原始组件：React Level Exam React地图
+ */
 class ReactLevelExam extends Component {
     constructor() {
         super();
@@ -23,5 +28,5 @@ class ReactLevelExam extends Component {
     }
 
 }
-
+ReactLevelExam.propTypes = propTypes;
 export default  ReactLevelExam;
